@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Graduation Countdown</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script type="text/javascript" src="script.js" defer></script>
+</head>
+<body>
+<div id="countdown">Louis will be one billion seconds old in <span id="days"></span> days, <span id="hours"></span> hours, <span id="minutes"></span> minutes, and <span id="seconds"></span> seconds!</div>
+</body>
+<script>
+let msToSeconds = 1000;
+let msToMinutes = msToSeconds * 60;
+let msToHours = msToMinutes * 60;
+let msToDays = msToHours * 24;
+
+setInterval(getTime, 1000);
+
+function getTime() {
+  //Current date/time
+  let now = new Date();
+  //Birth date
+  let birth = new Date("June 20, 1991 9:52:00 GMT-0400");
+  let billion = new Date(birth.getTime() + 1000000000000)
+
+  let difference = billion - now;
+
+  let days = Math.floor(difference / msToDays);
+  let hours = Math.floor((difference % msToDays) / msToHours);
+  let minutes = Math.floor((difference % msToHours) / msToMinutes);
+  let seconds = Math.floor((difference % msToMinutes) / msToSeconds);
+
+//   console.log(days, hours, minutes, seconds);
+
+  document.getElementById("days").innerHTML = days;
+  document.getElementById("hours").innerHTML = hours;
+  document.getElementById("minutes").innerHTML = minutes;
+  document.getElementById("seconds").innerHTML = seconds;
+  document.getElementById("countdown").style.display = "block";
+}
+</script>
+<style>
+body {
+  background-color: lightgreen;
+}
+
+#countdown {
+  display: none;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 200px;
+  padding: 50px;
+  font-size: 64px;
+  font-family: "Arial";
+  text-align: center;
+  background-color: #00000033;
+  min-width: 40%;
+  max-width: 50%
+}
+</style>
+</html>
