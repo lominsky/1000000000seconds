@@ -21,7 +21,19 @@ function getTime() {
   let now = new Date();
   //Birth date
   let birth = new Date("June 20, 1991 9:52:00 GMT-0400");
-  let billion = new Date(birth.getTime() + 1000000000000)
+
+  let search = location.search;
+  if(search.length > 1) search = search.substring(1);
+  search = new Date(search);
+  if(search != "Invalid Date") {
+    birth = search;
+    search = true;
+  } else {
+    search = false;
+  }
+
+
+  let billion = new Date(birth.getTime() + 1000000000000);
 
   let difference = billion - now;
 
@@ -32,10 +44,17 @@ function getTime() {
 
 //   console.log(days, hours, minutes, seconds);
 
-  document.getElementById("days").innerHTML = days;
-  document.getElementById("hours").innerHTML = hours;
-  document.getElementById("minutes").innerHTML = minutes;
-  document.getElementById("seconds").innerHTML = seconds;
+  if(search) {
+    let s = "One billion seconds from " + birth.toLocaleDateString() + " is " + billion.toLocaleDateString() + ".\n";
+    s += "That is in " + days + " days, " + hours + " hours, " + minutes + " minutes, and " + seconds + " seconds."
+    document.getElementById("countdown").innerText = s;
+  } else {
+    document.getElementById("days").innerText = days;
+    document.getElementById("hours").innerText = hours;
+    document.getElementById("minutes").innerText = minutes;
+    document.getElementById("seconds").innerText = seconds;
+  }
+  
   document.getElementById("countdown").style.display = "block";
 }
 </script>
@@ -48,9 +67,9 @@ body {
   display: none;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 200px;
+  margin-top: 100px;
   padding: 50px;
-  font-size: 64px;
+  font-size: 48px;
   font-family: "Arial";
   text-align: center;
   background-color: #00000033;
