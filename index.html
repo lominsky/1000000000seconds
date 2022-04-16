@@ -6,13 +6,14 @@
   <script type="text/javascript" src="script.js" defer></script>
 </head>
 <body>
-<div id="countdown">Louis will be one billion seconds old in <span id="days"></span> days, <span id="hours"></span> hours, <span id="minutes"></span> minutes, and <span id="seconds"></span> seconds!</div>
+<div id="countdown">I will be one billion seconds old in <span id="years"></span> years, <span id="days"></span> days, <span id="hours"></span> hours, <span id="minutes"></span> minutes, and <span id="seconds"></span> seconds!</div>
 </body>
 <script>
 let msToSeconds = 1000;
 let msToMinutes = msToSeconds * 60;
 let msToHours = msToMinutes * 60;
 let msToDays = msToHours * 24;
+let msToYears = msToDays * 365;
 
 setInterval(getTime, 1000);
 
@@ -37,7 +38,8 @@ function getTime() {
 
   let difference = billion - now;
 
-  let days = Math.floor(difference / msToDays);
+  let years = Math.floor(difference / msToYears);
+  let days = Math.floor((difference % msToYears) / msToDays);
   let hours = Math.floor((difference % msToDays) / msToHours);
   let minutes = Math.floor((difference % msToHours) / msToMinutes);
   let seconds = Math.floor((difference % msToMinutes) / msToSeconds);
@@ -46,9 +48,10 @@ function getTime() {
 
   if(search) {
     let s = "One billion seconds from " + birth.toLocaleDateString() + " is " + billion.toLocaleDateString() + ".\n";
-    s += "That is in " + days + " days, " + hours + " hours, " + minutes + " minutes, and " + seconds + " seconds."
+    s += "That is in " + years + " years, " + days + " days, " + hours + " hours, " + minutes + " minutes, and " + seconds + " seconds."
     document.getElementById("countdown").innerText = s;
   } else {
+    document.getElementById("years").innerText = years;
     document.getElementById("days").innerText = days;
     document.getElementById("hours").innerText = hours;
     document.getElementById("minutes").innerText = minutes;
