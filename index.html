@@ -1,83 +1,137 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>Billion Second Countdown</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <script type="text/javascript" src="script.js" defer></script>
-</head>
-<body>
-<div id="countdown">I will be one billion seconds old in <span id="years"></span> years, <span id="days"></span> days, <span id="hours"></span> hours, <span id="minutes"></span> minutes, and <span id="seconds"></span> seconds!</div>
-</body>
-<script>
-let msToSeconds = 1000;
-let msToMinutes = msToSeconds * 60;
-let msToHours = msToMinutes * 60;
-let msToDays = msToHours * 24;
-let msToYears = msToDays * 365;
-
-setInterval(getTime, 1000);
-
-function getTime() {
-  //Current date/time
-  let now = new Date();
-  //Birth date
-  let birth = new Date("June 20, 1991 9:52:00 GMT-0400");
-
-  let search = location.search;
-  if(search.length > 1) search = search.substring(1);
-  search = new Date(search);
-  if(search != "Invalid Date") {
-    birth = search;
-    search = true;
-  } else {
-    search = false;
-  }
-
-
-  let billion = new Date(birth.getTime() + 1000000000000);
-
-  let difference = billion - now;
-
-  let years = Math.floor(difference / msToYears);
-  let days = Math.floor((difference % msToYears) / msToDays);
-  let hours = Math.floor((difference % msToDays) / msToHours);
-  let minutes = Math.floor((difference % msToHours) / msToMinutes);
-  let seconds = Math.floor((difference % msToMinutes) / msToSeconds);
-
-//   console.log(days, hours, minutes, seconds);
-
-  if(search) {
-    let s = "One billion seconds from " + birth.toLocaleDateString() + " is " + billion.toLocaleDateString() + ".\n";
-    s += "That is in " + years + " years, " + days + " days, " + hours + " hours, " + minutes + " minutes, and " + seconds + " seconds."
-    document.getElementById("countdown").innerText = s;
-  } else {
-    document.getElementById("years").innerText = years;
-    document.getElementById("days").innerText = days;
-    document.getElementById("hours").innerText = hours;
-    document.getElementById("minutes").innerText = minutes;
-    document.getElementById("seconds").innerText = seconds;
-  }
+<html lang="en">
+  <head>
+    <title>Countdown</title>
+  </head>
+  <body onload="onLoad()">
+    <p>
+      <span class="leftCol">Start Date:</span><input id="date" type="date">
+    </p>
+    <p>
+      <span class="leftCol">Start Time:</span><input id="time" type="time">
+    </p>
+    <p>
+      <span class="leftCol">Timespan:</span>
+      <select id="timespan">
+        <option value="1000000000">1 Billions Seconds</option>
+        <option value="2000000000">2 Billions Seconds</option>
+        <option value="1000000">1 Million Seconds</option>
+        <option value="536870912">2^29 Seconds</option>
+        <option value="1073741824">2^30 Seconds</option>
+        <option value="2147483648">2^31 Seconds</option>
+      </select>
+    </p>
+    <p>
+      <button onclick="submit()">
+        Countdown
+      </button>
+    </p>
+    <br>
+    <p id="targetDate"></p>
+    <p id="target"></p>
+  </body>
   
-  document.getElementById("countdown").style.display = "block";
-}
-</script>
-<style>
-body {
-  background-color: lightgreen;
-}
+  <script>
+    function onLoad() {
+      let now = new Date();
+      now = new Date(now.getTime() - now.getTimezoneOffset()*60*1000);
+      now = now.toISOString().split('T')
+      document.getElementById("date").value = now[0]
+      document.getElementById("time").value = now[1].substring(0,8)
+    }
+    
+    
+    let target;
+    
+    function submit() {
+      let dateInput = document.getElementById("date").value;
+      let timeInput = document.getElementById("time").value;
+      let start = new Date(dateInput + " " + timeInput)
+      let select = document.getElementById("timespan");
+      let selected = select.options[select.selectedIndex].value
+      target = start.getTime() + parseInt(selected) * 1000;
+      document.getElementById("targetDate").innerText = new Date(target);
+      update()
+      setInterval(update, 1000);
+    }
+    
+    function update() {
+      let now = new Date();
+      let diff = target - now.getTime();
+      
+      let secondsMS = 1000;
+      let minutesMS = secondsMS*60;
+      let hoursMS = minutesMS*60;
+      let daysMS = hoursMS*24;
+      let weeksMS = daysMS*7;
+      let yearsMS = weeksMS*52;
+      
+      let future = diff > 0;
+      diff = Math.abs(diff)
+      
+      let years = parseInt(diff/yearsMS);
+      diff %= yearsMS;
+      let weeks = parseInt(diff/weeksMS);
+      diff %= weeksMS;
+      let days = parseInt(diff/daysMS);
+      diff %= daysMS;
+      let hours = parseInt(diff/hoursMS);
+      diff %= hoursMS;
+      let minutes = parseInt(diff/minutesMS);
+      diff %= minutesMS;
+      let seconds = parseInt(diff/secondsMS)
+      
+      let timeString = ""
+      if(years > 0) {
+        if(years==1)
+          timeString += years + " year, ";
+        else
+          timeString += years + " years, ";
+      }
+      if(weeks > 0) {
+        if(weeks==1)
+          timeString += weeks + " week, ";
+        else
+          timeString += weeks + " weeks, ";
+      }
+      if(days > 0) {
+        if(days==1)
+          timeString += days + " day, ";
+        else
+          timeString += days + " days, ";
+      }
+      if(hours > 0) {
+        if(hours==1)
+          timeString += hours + " hour, ";
+        else
+          timeString += hours + " hours, ";
+      }
+      if(minutes > 0) {
+        if(minutes==1)
+          timeString += minutes + " minute, ";
+        else
+          timeString += minutes + " minutes, ";
+      }
+      if(seconds==1)
+        timeString += seconds + " second";
+      else
+        timeString += seconds + " seconds";
 
-#countdown {
-  display: none;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 100px;
-  padding: 50px;
-  font-size: 48px;
-  font-family: "Arial";
-  text-align: center;
-  background-color: #00000033;
-  min-width: 40%;
-  max-width: 50%
-}
-</style>
+      
+      if(future) {
+        timeString = "It is in " + timeString + "."
+      } else {
+        timeString = "It was " + timeString + " ago."
+      }
+      document.getElementById("target").innerText = timeString;
+    }
+  </script>
+  
+  <style>
+    .leftCol {
+      width: 100px;
+      display: inline-block;
+    }
+
+  </style>
 </html>
